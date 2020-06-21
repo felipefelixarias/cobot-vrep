@@ -162,7 +162,7 @@ for i in range(len(Goal_joint_angles)):
 
 ret, dims, im = vrep.simxGetVisionSensorImage(clientID, vision_sensor_handle, 0, vrep.simx_opmode_buffer)
 im = np.asarray(im).astype('uint8')
-im = cv2.flip(im.reshape(dims[0], dims[1], 3))
+im = im.reshape(dims[0], dims[1], 3)
 img = Image.fromarray(im)
 img.save('testarm.png')
     
