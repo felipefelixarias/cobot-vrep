@@ -1,0 +1,21 @@
+function sysCall_init()
+    openCloseMotor=sim.getObjectHandle('RG2_openCloseJoint') 
+    PID_P=0.1 
+end
+
+function sysCall_jointCallback(inData)
+    local errorValue=(-sim.getJointPosition(openCloseMotor)/2)-inData.currentPos 
+    local ctrl=errorValue*PID_P 
+    local velocityToApply=ctrl/inData.dynStepSize 
+    if (velocityToApply>inData.velUpperLimit) then 
+        velocityToApply=inData.velUpperLimit 
+    end 
+    if (velocityToApply<-inData.velUpperLimit) then 
+        velocityToApply=-inData.velUpperLimit 
+    end 
+    local forceOrTorqueToApply=inData.maxForce 
+    local outData={} 
+    outData.velocity=velocityToApply 
+    outData.force=forceOrTorqueToApply 
+    return outData 
+end 

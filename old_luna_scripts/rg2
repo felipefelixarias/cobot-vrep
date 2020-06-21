@@ -1,0 +1,32 @@
+function sysCall_init()
+        
+    modelBase=sim.getObjectAssociatedWithScript(sim.handle_self)
+    robotBase=modelBase
+    while true do
+        robotBase=sim.getObjectParent(robotBase)
+        if robotBase==-1 then
+            robotName='UR5'
+            break
+        end
+        robotName=sim.getObjectName(robotBase)
+        local suffix,suffixlessName=sim.getNameSuffix(robotName)
+        if suffixlessName=='UR5' then
+            break
+        end
+    end
+    robotName=sim.getObjectName(robotBase)
+    motorHandle=sim.getObjectHandle('RG2_openCloseJoint')
+    
+end
+
+
+function sysCall_actuation()
+    local data=sim.getStringSignal(robotName..'_rg2GripperData')
+    if data then
+        velocityAndForce=sim.unpackFloatTable(data)
+        sim.setJointTargetVelocity(motorHandle,velocityAndForce[1])
+        sim.setJointForce(motorHandle,velocityAndForce[2])
+    end
+end
+
+
